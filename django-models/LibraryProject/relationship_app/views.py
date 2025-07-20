@@ -1,14 +1,14 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.views.generic.detail import DetailView
 from .models import Book, Library
 
-from django.contrib.auth.decorators import user_passes_test, login_required
+from django.contrib.auth.decorators import user_passes_test
 from .models import UserProfile
 
-from django.contrib.auth.decorators import user_passes_test
-from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
 
 def list_books(request):
     books = Book.objects.all()
@@ -32,20 +32,25 @@ def register(request):
     return render(request, 'relationship_app/register.html', {'form': form})
 
 
-def check_role(role):
-    def decorator(user):
-        return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == role
-    return user_passes_test(decorator)
+def role_required(role_name):
+    def check_role(user):
+        return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == role_name
+    return user_passes_test(check_role)
 
 
-@check_role('Admin')
+
+@role_required('Admin')
 def admin_view(request):
     return render(request, 'relationship_app/admin_view.html')
 
-@check_role('Librarian')
+
+@role_required('Librarian')
 def librarian_view(request):
     return render(request, 'relationship_app/librarian_view.html')
 
-@check_role('Member')
+
+@role_required('Member')
 def member_view(request):
     return render(request, 'relationship_app/member_view.html')
+
+
