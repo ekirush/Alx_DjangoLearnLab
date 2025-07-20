@@ -7,6 +7,9 @@ from .models import Book, Library
 from django.contrib.auth.decorators import user_passes_test, login_required
 from .models import UserProfile
 
+from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import render
+
 def list_books(request):
     books = Book.objects.all()
     return render(request, "relationship_app/list_books.html", {"list_books": books})
@@ -33,6 +36,7 @@ def check_role(role):
     def decorator(user):
         return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == role
     return user_passes_test(decorator)
+
 
 @check_role('Admin')
 def admin_view(request):
