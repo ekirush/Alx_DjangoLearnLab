@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-_&4u*mnfgpljju!94@7)vhg*uk)=d++*x$uns20a!gr5vp+f51'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -125,5 +125,31 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
 
+# Secure settings
+SECURE_BROWSER_XSS_FILTER = True  # Mitigates some XSS attacks
+X_FRAME_OPTIONS = 'DENY'          # Prevents clickjacking
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevents MIME type sniffing
+
+# Cookies must be sent over HTTPS
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+# Recommended additional settings
+SECURE_HSTS_SECONDS = 3600  # Enforces HTTPS for 1 hour
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+INSTALLED_APPS += ['csp']
+
+MIDDLEWARE = [
+    'csp.middleware.CSPMiddleware',
+    # keep existing middleware
+]
+
+# Basic policy example:
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC = ("'self'", 'https://cdn.jsdelivr.net')
+CSP_STYLE_SRC = ("'self'", 'https://fonts.googleapis.com')
+CSP_FONT_SRC = ("'self'", 'https://fonts.gstatic.com')
 
     
