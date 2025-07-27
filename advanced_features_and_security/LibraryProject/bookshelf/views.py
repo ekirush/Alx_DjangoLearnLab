@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponseForbidden
 from .models import Book
 from .forms import BookForm
+from .forms import BookForm, ExampleForm
+
 
 # -----------------------------
 # View: List all books
@@ -58,3 +60,17 @@ def delete_book(request, book_id):
         return redirect('book_list')
     # Render a POST-only delete confirmation form with CSRF protection
     return render(request, 'bookshelf/book_confirm_delete.html', {'book': book})
+
+@login_required
+def example_form_view(request):
+    if request.method == 'POST':
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            # Handle cleaned data safely
+            name = form.cleaned_data['name']
+            comment = form.cleaned_data['comment']
+            # For demo purposes: show confirmation
+            return render(request, 'bookshelf/form_success.html', {'name': name})
+    else:
+        form = ExampleForm()
+    return render(request, 'bookshelf/form_example.html', {'form': form})
