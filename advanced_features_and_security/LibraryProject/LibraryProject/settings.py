@@ -130,14 +130,25 @@ SECURE_BROWSER_XSS_FILTER = True  # Mitigates some XSS attacks
 X_FRAME_OPTIONS = 'DENY'          # Prevents clickjacking
 SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevents MIME type sniffing
 
-# Cookies must be sent over HTTPS
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
 
-# Recommended additional settings
-SECURE_HSTS_SECONDS = 3600  # Enforces HTTPS for 1 hour
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
+# Enforce HTTPS by redirecting all HTTP requests to HTTPS
+SECURE_SSL_REDIRECT = True  # Redirect all HTTP to HTTPS
+
+
+# Secure cookies
+SESSION_COOKIE_SECURE = True  # Only send session cookie over HTTPS
+CSRF_COOKIE_SECURE = True     # Only send CSRF cookie over HTTPS
+
+# HTTP Strict Transport Security (HSTS)
+SECURE_HSTS_SECONDS = 31536000  # Enforce HTTPS for 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply HSTS to all subdomains
+SECURE_HSTS_PRELOAD = True  # Allow site to be added to browser preload list
+
+# Security headers
+X_FRAME_OPTIONS = 'DENY'  # Prevent clickjacking by denying framing
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent content type sniffing
+SECURE_BROWSER_XSS_FILTER = True    # Enable the XSS protection in the browser
+SECURE_REFERRER_POLICY = "same-origin"
 
 INSTALLED_APPS += ['csp']
 
