@@ -10,3 +10,18 @@
 ## Permissions
 - Read: Public
 - Write: Authenticated users only
+
+
+
+### Filtering
+GET /api/books/?title=BookTitle
+GET /api/books/?author=AuthorID
+GET /api/books/?publication_year=Year
+
+### Search
+GET /api/books/?search=keyword
+
+### Ordering
+GET /api/books/?ordering=title
+GET /api/books/?ordering=-publication_year
+
