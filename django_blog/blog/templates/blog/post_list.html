@@ -1,0 +1,15 @@
+{% extends "blog/base.html" %}
+{% block title %}Blog Posts{% endblock %}
+
+{% block content %}
+<h2>All Blog Posts</h2>
+{% for post in posts %}
+    <article style="margin-bottom: 20px;">
+        <h3>{{ post.title }}</h3>
+        <p>{{ post.content|truncatewords:25 }}</p>
+        <p><small>by {{ post.author }} on {{ post.published_date }}</small></p>
+    </article>
+{% empty %}
+    <p>No posts available yet.</p>
+{% endfor %}
+{% endblock %}
