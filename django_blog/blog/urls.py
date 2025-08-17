@@ -14,6 +14,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='blog/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='blog/logout.html'), name='logout'),
 
+    path('posts/', PostListView.as_view(), name='posts'),
     path('posts/new/', PostCreateView.as_view(), name='post-create'),             # create
     path('posts/<int:pk>/', PostDetailView.as_view(), name='post-detail'),        # detail
     path('posts/<int:pk>/edit/', PostUpdateView.as_view(), name='post-update'),   # update
