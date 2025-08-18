@@ -9,5 +9,5 @@
     {{ form.as_p }}
     <button type="submit">Save Comment</button>
 </form>
-<a href="{% url 'post-detail' view.object.post.pk %}">Back to Post</a>
+<a href="{% url 'post-detail' post.pk %}">Back to Post</a>
 {% endblock %}

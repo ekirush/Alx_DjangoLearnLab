@@ -1,32 +1,28 @@
 {% extends 'blog/base.html' %}
 
-{% block title %}Blog Posts{% endblock %}
-
 {% block content %}
 <h1>Blog Posts</h1>
 
+<!-- Search Bar -->
+<form method="get" action="{% url 'post-search' %}">
+    <input type="text" name="q" placeholder="Search posts..." value="{{ search_query }}">
+    <button type="submit">Search</button>
+</form>
+
 {% for post in posts %}
-<div class="post-snippet">
+<div>
     <h2><a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a></h2>
-    <p>by {{ post.author.username }} | {{ post.published_date|date:"M d, Y" }}</p>
     <p>{{ post.content|truncatechars:200 }}</p>
+    <p>Tags:
+        {% for tag in post.tags.all %}
+            <a href="{% url 'posts-by-tag' tag.name %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+        {% empty %}
+            No tags
+        {% endfor %}
+    </p>
 </div>
 <hr>
 {% empty %}
-<p>No posts available.</p>
+<p>No posts found.</p>
 {% endfor %}
-
-{% if is_paginated %}
-<div class="pagination">
-    {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-    {% endif %}
-    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-    {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">Next</a>
-    {% endif %}
-</div>
-{% endif %}
-
-<a href="{% url 'post-create' %}">Create New Post</a>
 {% endblock %}
