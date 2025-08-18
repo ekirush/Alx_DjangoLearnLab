@@ -1,23 +1,58 @@
 {% extends "blog/base.html" %}
+{% load static %}
+
 {% block title %}{{ post.title }}{% endblock %}
+
 {% block content %}
-<article class="post">
-  <h1>{{ post.title }}</h1>
-  <small>by {{ post.author.username }} • {{ post.published_date|date:"M d, Y H:i" }}</small>
-  <div class="post-body">
-    <p>{{ post.content|linebreaks }}</p>
-  </div>
-
-  {% if user.is_authenticated and user == post.author %}
-    <div class="actions">
-      <a class="btn" href="{% url 'post-update' post.pk %}">✏️ Edit</a>
-
-      <form action="{% url 'post-delete' post.pk %}" method="post" style="display:inline;">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">🗑 Delete</button>
-      </form>
+<article class="post-detail">
+    <h2>{{ post.title }}</h2>
+    <p>By {{ post.author.username }} on {{ post.created_at|date:"Y-m-d H:i" }}</p>
+    <div class="post-content">
+        {{ post.content }}
     </div>
-  {% endif %}
 </article>
-<p><a href="{% url 'posts' %}">← Back to all posts</a></p>
+
+<hr>
+
+<section class="comments">
+    <h3>Comments</h3>
+    {% if comments %}
+        <ul>
+            {% for comment in comments %}
+                <li>
+                    <p>
+                        <strong>{{ comment.author.username }}</strong>
+                        ({{ comment.created_at|date:"Y-m-d H:i" }}):
+                    </p>
+                    <p>{{ comment.content }}</p>
+
+                    {% if user == comment.author %}
+                        <p>
+                            <a href="{% url 'comment-update' comment.id %}">Edit</a> |
+                            <a href="{% url 'comment-delete' comment.id %}">Delete</a>
+                        </p>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No comments yet. Be the first to comment!</p>
+    {% endif %}
+</section>
+
+<hr>
+
+{% if user.is_authenticated %}
+<section class="add-comment">
+    <h4>Add a comment:</h4>
+    <form action="{% url 'comment-create' post.id %}" method="post">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit">Post Comment</button>
+    </form>
+</section>
+{% else %}
+<p><a href="{% url 'login' %}">Login</a> to add a comment.</p>
+{% endif %}
+
 {% endblock %}
